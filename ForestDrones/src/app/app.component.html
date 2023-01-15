@@ -1,0 +1,40 @@
+<h1>Drone Overview</h1>
+<form #f="ngForm">
+  <div>
+    <input type="text" name="positionX" placeholder="Enter the X position" [(ngModel)]="inputX" required>
+  </div>
+  <div>
+    <input type="text" name="positionY" placeholder="Enter the Y position" [(ngModel)]="inputY" required>
+  </div>
+  </form>
+<table class="table table-striped">
+  <thead>
+    <tr>
+    <th>Drone ID</th>
+    <th>Is Active</th>
+    <th>Position</th>
+    <th>Set Status</th>
+    <th>Fly To  & Scan</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of drones; let ix = index">
+      <td>{{item.id}}</td>
+      <td><input type="checkbox" name="isDroneActive{{ix}}" [(ngModel)]="item.isActive"></td>
+      <td><span *ngIf="item.isActive"> X:{{item.position.x}} Y: {{item.position.y}}</span></td>
+      <td>
+        <button *ngIf="!(item.isActive)" class="btn btn-secondary" (click)="activateDrone(item)">Activate</button>
+        <button *ngIf="item.isActive" class="btn btn-secondary"(click)="shutdownDrone(item)">Disable</button>
+      </td>
+      <td><button class="btn btn-primary" [disabled]="!(item.isActive)" (click)="flyToPositionAndScanArea(item)">Fly & Scan</button></td>
+    </tr>
+
+  </tbody>
+</table>
+<div *ngIf="scanResult && nearestTreePos && scanDrone && isValidDistance()">
+  <h2>Nearest Tree from Scan</h2>
+  <p>X: {{ nearestTreePos.x }}</p>
+  <p>Y: {{ nearestTreePos.y }}</p>
+  <p>Manhatten Distance: {{ distanceToNearestTree }}</p>
+  <button class="btn btn-secondary" (click)="examine(nearestTreePos.x, nearestTreePos.y, getNearestTreeIndex(scanDrone.position.x, scanDrone.position.y))">Examine</button>
+</div>
